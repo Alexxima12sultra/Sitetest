@@ -1,16 +1,314 @@
-/* Робимо категорії липкими для зручності скролу */
-.chip-row {
-  position: sticky;
-  top: 64px;
-  z-index: 99;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Дошка.UA — MD3 Edition</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+<style>
+:root {
+  --md-primary: #4355B9;
+  --md-on-primary: #FFFFFF;
+  --md-primary-container: #DEE0FF;
+  --md-on-primary-container: #00105C;
+  --md-secondary-container: #DFE1F9;
+  --md-on-secondary-container: #181A2C;
+  --md-surface: #FAFAFF;
+  --md-surface-container-low: #F5F3FA;
+  --md-surface-container-highest: #E3E1EB;
+  --md-on-surface: #1B1B1F;
+  --md-on-surface-variant: #46464F;
+  --md-outline: #767680;
+  --md-outline-variant: #C7C5D0;
+  --md-error: #BA1A1A;
+  
+  --md-shape-sm: 8px;
+  --md-shape-md: 12px;
+  --md-shape-lg: 16px;
+  --md-shape-full: 999px;
+  
+  --md-elevation-1: 0 1px 3px rgba(0,0,0,0.12);
+  --md-elevation-3: 0 4px 8px 3px rgba(0,0,0,0.1);
+
+  --cat-real: #6750A4; --cat-auto: #006874; --cat-work: #2D6A2D;
+  --cat-tech: #C77B30; --cat-serv: #984061; --cat-anim: #3C6B44;
 }
 
-/* Покращуємо візуал карток при наведенні */
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: 'Roboto', sans-serif; background: var(--md-surface); color: var(--md-on-surface); line-height: 1.5; }
+
+/* ── HEADER & STICKY NAV ── */
+.top-app-bar {
+  background: var(--md-surface-container-low);
+  padding: 0 16px; display: flex; align-items: center; height: 64px;
+  position: sticky; top: 0; z-index: 100; box-shadow: var(--md-elevation-1);
+}
+.logo-text { font-size: 22px; flex: 1; }
+.logo-text strong { color: var(--md-primary); }
+
+.chip-row {
+  padding: 12px 16px; display: flex; gap: 8px; overflow-x: auto;
+  background: var(--md-surface-container-low);
+  border-bottom: 1px solid var(--md-outline-variant);
+  position: sticky; top: 64px; z-index: 99; /* Липка навігація */
+}
+.chip-row::-webkit-scrollbar { display: none; }
+
+/* ── COMPONENTS ── */
+.btn-filled {
+  background: var(--md-primary); color: var(--md-on-primary); border: none;
+  padding: 10px 24px; border-radius: var(--md-shape-full); font-weight: 500; cursor: pointer;
+}
+.filter-chip {
+  padding: 0 16px; height: 32px; border-radius: var(--md-shape-sm);
+  border: 1px solid var(--md-outline-variant); background: transparent;
+  cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 6px;
+}
+.filter-chip.selected { background: var(--md-secondary-container); border-color: transparent; }
+
+/* ── CARD GRID ── */
+.content { max-width: 1200px; margin: 0 auto; padding: 20px 16px; }
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+
 .ad-card {
-  border: 1px solid transparent;
+  background: var(--md-surface-container-low); border-radius: var(--md-shape-md);
+  overflow: hidden; display: flex; flex-direction: column;
+  transition: all 0.2s ease; border: 1px solid transparent; /* MD3 Hover */
 }
-.ad-card:hover {
-  border-color: var(--md-outline-variant);
-  background: var(--md-surface-container);
+.ad-card:hover { transform: translateY(-4px); border-color: var(--md-outline-variant); box-shadow: var(--md-elevation-3); }
+
+.card-media { height: 180px; background: var(--md-surface-container-highest); position: relative; }
+.card-media img { width: 100%; height: 100%; object-fit: cover; }
+.card-fav-btn {
+  position: absolute; top: 8px; right: 8px; width: 36px; height: 36px;
+  border-radius: 50%; border: none; background: #fff; cursor: pointer;
 }
+.card-fav-btn.active { color: var(--md-error); }
+
+.card-content { padding: 16px; flex: 1; }
+.card-title { font-size: 16px; font-weight: 500; margin: 8px 0; }
+.card-price { font-size: 18px; font-weight: 700; color: var(--md-primary); }
+
+/* ── MODALS ── */
+.dialog-scrim {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+  display: none; align-items: center; justify-content: center; z-index: 500;
+}
+.dialog-scrim.open { display: flex; }
+.dialog { background: #fff; width: 90%; max-width: 500px; border-radius: var(--md-shape-lg); padding: 24px; }
+
+.md-field { margin-bottom: 16px; }
+.md-field label { display: block; font-size: 12px; color: var(--md-primary); margin-bottom: 4px; }
+.md-field input, .md-field textarea, .md-field select {
+  width: 100%; padding: 12px; border: 1px solid var(--md-outline); border-radius: var(--md-shape-sm);
+}
+
+.fab {
+  position: fixed; bottom: 24px; right: 24px;
+  padding: 16px 24px; border-radius: var(--md-shape-lg);
+  background: var(--md-primary-container); color: var(--md-on-primary-container);
+  border: none; cursor: pointer; box-shadow: var(--md-elevation-3); display: flex; gap: 8px;
+}
+
+.badge::after {
+  content: attr(data-count); position: absolute; top: -2px; right: -2px;
+  background: var(--md-error); color: #fff; font-size: 10px;
+  padding: 2px 6px; border-radius: 10px;
+}
+.badge[data-count="0"]::after { display: none; }
+
+.icon-btn { background: transparent; border: none; padding: 8px; cursor: pointer; position: relative; }
+
+.snackbar {
+  position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+  background: #333; color: #fff; padding: 12px 24px; border-radius: 4px;
+  opacity: 0; transition: 0.3s; z-index: 1000;
+}
+.snackbar.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="top-app-bar">
+  <span class="logo-text">Дошка<strong>.UA</strong></span>
+  <button class="icon-btn badge" id="favBadgeBtn" data-count="0" onclick="alert('Розділ обраного в розробці')">
+    <span class="material-icons-round">favorite_border</span>
+  </button>
+</div>
+
+<div class="chip-row" id="chipRow">
+  <button class="filter-chip selected" onclick="setCategory(this, 'all')">Всі</button>
+  <button class="filter-chip" onclick="setCategory(this, 'Техніка')">Техніка</button>
+  <button class="filter-chip" onclick="setCategory(this, 'Транспорт')">Транспорт</button>
+  <button class="filter-chip" onclick="setCategory(this, 'Нерухомість')">Нерухомість</button>
+</div>
+
+<div class="content">
+  <div style="margin-bottom: 16px; display: flex; gap: 10px;">
+    <input type="text" id="searchInput" placeholder="Пошук..." oninput="renderCards()" style="flex:1; padding:10px; border-radius:8px; border:1px solid #ccc;">
+  </div>
+  <div class="card-grid" id="board"></div>
+</div>
+
+<button class="fab" onclick="document.getElementById('addScrim').classList.add('open')">
+  <span class="material-icons-round">add</span> Подати оголошення
+</button>
+
+<div class="dialog-scrim" id="addScrim">
+  <div class="dialog">
+    <h2 style="margin-bottom: 20px;">Нове оголошення</h2>
+    <div class="md-field">
+      <label>Заголовок</label>
+      <input id="nTitle" placeholder="Що ви продаєте?">
+    </div>
+    <div class="md-field">
+      <label>Категорія</label>
+      <select id="nCat">
+        <option>Техніка</option><option>Транспорт</option><option>Нерухомість</option>
+      </select>
+    </div>
+    <div class="md-field">
+      <label>Ціна (грн)</label>
+      <input type="number" id="nPrice" value="0">
+    </div>
+    <div class="md-field">
+      <label>Опис</label>
+      <textarea id="nDesc" rows="3"></textarea>
+    </div>
+    <div style="display: flex; gap: 10px; justify-content: flex-end;">
+      <button onclick="document.getElementById('addScrim').classList.remove('open')" style="background:none; border:none; cursor:pointer;">Скасувати</button>
+      <button class="btn-filled" onclick="submitAd()">Опублікувати</button>
+    </div>
+  </div>
+</div>
+
+<div class="snackbar" id="snackbar"></div>
+
+<script>
+/* ══ STATE & STORAGE ══ */
+let ads = [];
+let favorites = new Set();
+let currentCat = 'all';
+
+// Функція очищення вводу (Security)
+function clean(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function saveAll() {
+  localStorage.setItem('ua_ads_data', JSON.stringify(ads));
+  localStorage.setItem('ua_favs_data', JSON.stringify(Array.from(favorites)));
+}
+
+function loadAll() {
+  const sAds = localStorage.getItem('ua_ads_data');
+  const defaultAds = [
+    {id:1, title:'iPhone 15 Pro', category:'Техніка', price:45000, desc:'Стан ідеальний', date:'03.05.2026'},
+    {id:2, title:'Квартира 2к', category:'Нерухомість', price:900000, desc:'Центр міста', date:'02.05.2026'}
+  ];
+  ads = sAds ? JSON.parse(sAds) : defaultAds;
+
+  const sFavs = localStorage.getItem('ua_favs_data');
+  if(sFavs) favorites = new Set(JSON.parse(sFavs));
+  updateFavBadge();
+}
+
+/* ══ UI LOGIC ══ */
+function snack(msg) {
+  const s = document.getElementById('snackbar');
+  s.textContent = msg; s.classList.add('show');
+  setTimeout(() => s.classList.remove('show'), 2500);
+}
+
+function updateFavBadge() {
+  document.getElementById('favBadgeBtn').dataset.count = favorites.size;
+}
+
+function setCategory(btn, cat) {
+  document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  currentCat = cat;
+  renderCards();
+}
+
+function renderCards() {
+  const board = document.getElementById('board');
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  
+  const filtered = ads.filter(a => 
+    (currentCat === 'all' || a.category === currentCat) &&
+    (a.title.toLowerCase().includes(q) || a.desc.toLowerCase().includes(q))
+  );
+
+  board.innerHTML = filtered.map(a => `
+    <div class="ad-card">
+      <div class="card-media">
+        <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:#999;">
+           <span class="material-icons-round" style="font-size:48px;">image</span>
+        </div>
+        <button class="card-fav-btn ${favorites.has(a.id)?'active':''}" onclick="toggleFav(event, ${a.id})">
+          <span class="material-icons-round">${favorites.has(a.id)?'favorite':'favorite_border'}</span>
+        </button>
+      </div>
+      <div class="card-content">
+        <div style="font-size:11px; color:var(--md-primary); font-weight:700;">${a.category.toUpperCase()}</div>
+        <div class="card-title">${a.title}</div>
+        <div class="card-price">${a.price > 0 ? a.price.toLocaleString() + ' ₴' : 'Безкоштовно'}</div>
+        <div style="font-size:12px; color:#666; margin-top:8px;">${a.date}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function submitAd() {
+  const title = clean(document.getElementById('nTitle').value.trim());
+  const cat = document.getElementById('nCat').value;
+  const price = Math.max(0, parseInt(document.getElementById('nPrice').value) || 0); // Валідація ціни
+  const desc = clean(document.getElementById('nDesc').value.trim());
+
+  if(!title || !desc) { alert('Заповніть назву та опис!'); return; }
+
+  const newAd = {
+    id: Date.now(),
+    title, category: cat, price, desc,
+    date: new Date().toLocaleDateString('uk-UA')
+  };
+
+  ads.unshift(newAd);
+  saveAll(); // Збереження[cite: 1]
+  renderCards();
+  document.getElementById('addScrim').classList.remove('open');
+  snack('✅ Оголошення додано!');
+  
+  // Очищення форми
+  document.getElementById('nTitle').value = '';
+  document.getElementById('nDesc').value = '';
+  document.getElementById('nPrice').value = '0';
+}
+
+function toggleFav(e, id) {
+  e.stopPropagation();
+  if(favorites.has(id)) {
+    favorites.delete(id);
+    snack('Видалено з обраного');
+  } else {
+    favorites.add(id);
+    snack('❤️ Додано в обране');
+  }
+  updateFavBadge();
+  saveAll(); // Збереження[cite: 1]
+  renderCards();
+}
+
+// Ініціалізація
+window.onload = () => {
+  loadAll();
+  renderCards();
+};
+</script>
+
+</body>
+</html>
