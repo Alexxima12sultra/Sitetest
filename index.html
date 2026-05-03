@@ -3,73 +3,1285 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ПУЛЬС — Новини</title>
-
-<meta name="description" content="Актуальні новини дня">
-
+<title>Дошка.UA</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Flex:opsz,wght@8..144,300;8..144,400;8..144,500;8..144,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 <style>
-body {font-family: Arial; background:#0a0a08; color:#e8e6df; margin:0}
-header {padding:10px; border-bottom:1px solid #222; display:flex; justify-content:space-between}
-input {padding:6px; background:#111; color:#fff; border:1px solid #333}
-.card {border:1px solid #222; padding:12px; margin:10px; cursor:pointer}
-.card:hover {background:#161614}
+/* ═══════════════════════════════════════════
+   MD3 TOKENS
+═══════════════════════════════════════════ */
+:root {
+  /* Primary – Indigo */
+  --md-primary: #4355B9;
+  --md-on-primary: #FFFFFF;
+  --md-primary-container: #DEE0FF;
+  --md-on-primary-container: #00105C;
+  /* Secondary */
+  --md-secondary: #5B5D72;
+  --md-on-secondary: #FFFFFF;
+  --md-secondary-container: #DFE1F9;
+  --md-on-secondary-container: #181A2C;
+  /* Tertiary */
+  --md-tertiary: #77536C;
+  --md-on-tertiary: #FFFFFF;
+  --md-tertiary-container: #FFD8EF;
+  --md-on-tertiary-container: #2E1128;
+  /* Error */
+  --md-error: #BA1A1A;
+  --md-error-container: #FFDAD6;
+  /* Surface */
+  --md-surface: #FAFAFF;
+  --md-surface-variant: #E3E1EC;
+  --md-on-surface: #1B1B1F;
+  --md-on-surface-variant: #46464F;
+  --md-surface-container-lowest: #FFFFFF;
+  --md-surface-container-low: #F5F3FA;
+  --md-surface-container: #EFEDF6;
+  --md-surface-container-high: #E9E8F0;
+  --md-surface-container-highest: #E3E1EB;
+  /* Outline */
+  --md-outline: #767680;
+  --md-outline-variant: #C7C5D0;
+  /* Inverse */
+  --md-inverse-surface: #303034;
+  --md-inverse-on-surface: #F3F0F7;
+  --md-inverse-primary: #BBC2FF;
+  /* Category colors */
+  --cat-real:  #6750A4;
+  --cat-auto:  #006874;
+  --cat-work:  #2D6A2D;
+  --cat-tech:  #C77B30;
+  --cat-serv:  #984061;
+  --cat-anim:  #3C6B44;
+
+  --md-shape-xs: 4px;
+  --md-shape-sm: 8px;
+  --md-shape-md: 12px;
+  --md-shape-lg: 16px;
+  --md-shape-xl: 28px;
+  --md-shape-full: 999px;
+
+  --md-elevation-1: 0 1px 2px rgba(0,0,0,.1), 0 1px 3px 1px rgba(0,0,0,.08);
+  --md-elevation-2: 0 1px 2px rgba(0,0,0,.1), 0 2px 6px 2px rgba(0,0,0,.1);
+  --md-elevation-3: 0 4px 8px 3px rgba(0,0,0,.1), 0 1px 3px rgba(0,0,0,.12);
+
+  --md-state-hover: rgba(67,85,185,.08);
+  --md-state-press: rgba(67,85,185,.12);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background: var(--md-surface);
+  color: var(--md-on-surface);
+  min-height: 100vh;
+}
+
+/* ── MATERIAL COMPONENTS ── */
+
+/* Ripple */
+.ripple { position:relative; overflow:hidden; }
+.ripple::after {
+  content:''; position:absolute; inset:0; background:currentColor; opacity:0;
+  border-radius:inherit; transition:opacity .3s;
+}
+.ripple:active::after { opacity:.12; }
+
+/* Buttons */
+.btn-filled {
+  display:inline-flex; align-items:center; gap:8px;
+  background:var(--md-primary); color:var(--md-on-primary);
+  border:none; border-radius:var(--md-shape-full);
+  padding:10px 24px; font-family:'Roboto',sans-serif; font-size:14px; font-weight:500; letter-spacing:.1px;
+  cursor:pointer; transition:all .2s; box-shadow:var(--md-elevation-1); white-space:nowrap;
+}
+.btn-filled:hover { box-shadow:var(--md-elevation-2); filter:brightness(1.05); }
+.btn-filled .material-icons-round { font-size:18px; }
+
+.btn-tonal {
+  display:inline-flex; align-items:center; gap:8px;
+  background:var(--md-secondary-container); color:var(--md-on-secondary-container);
+  border:none; border-radius:var(--md-shape-full);
+  padding:10px 24px; font-family:'Roboto',sans-serif; font-size:14px; font-weight:500; letter-spacing:.1px;
+  cursor:pointer; transition:all .2s; white-space:nowrap;
+}
+.btn-tonal:hover { box-shadow:var(--md-elevation-1); filter:brightness(.97); }
+.btn-tonal .material-icons-round { font-size:18px; }
+
+.btn-outlined {
+  display:inline-flex; align-items:center; gap:8px;
+  background:transparent; color:var(--md-primary);
+  border:1px solid var(--md-outline); border-radius:var(--md-shape-full);
+  padding:10px 24px; font-family:'Roboto',sans-serif; font-size:14px; font-weight:500; letter-spacing:.1px;
+  cursor:pointer; transition:all .2s; white-space:nowrap;
+}
+.btn-outlined:hover { background:var(--md-state-hover); }
+
+.btn-text {
+  display:inline-flex; align-items:center; gap:6px;
+  background:transparent; color:var(--md-primary);
+  border:none; border-radius:var(--md-shape-full);
+  padding:10px 12px; font-family:'Roboto',sans-serif; font-size:14px; font-weight:500; letter-spacing:.1px;
+  cursor:pointer; transition:background .2s;
+}
+.btn-text:hover { background:var(--md-state-hover); }
+
+/* Icon buttons */
+.icon-btn {
+  width:40px; height:40px; border-radius:50%; border:none; background:transparent;
+  display:flex; align-items:center; justify-content:center; cursor:pointer;
+  color:var(--md-on-surface-variant); transition:background .2s;
+}
+.icon-btn:hover { background:rgba(0,0,0,.08); }
+.icon-btn .material-icons-round { font-size:22px; }
+
+.icon-btn-filled-tonal {
+  width:40px; height:40px; border-radius:50%; border:none;
+  background:var(--md-secondary-container); color:var(--md-on-secondary-container);
+  display:flex; align-items:center; justify-content:center; cursor:pointer;
+  transition:all .2s; box-shadow:var(--md-elevation-1);
+}
+.icon-btn-filled-tonal:hover { box-shadow:var(--md-elevation-2); }
+.icon-btn-filled-tonal .material-icons-round { font-size:20px; }
+
+/* FAB */
+.fab {
+  position:fixed; bottom:24px; right:24px; z-index:50;
+  display:flex; align-items:center; gap:12px;
+  background:var(--md-primary-container); color:var(--md-on-primary-container);
+  border:none; border-radius:var(--md-shape-lg);
+  padding:16px 20px; font-family:'Roboto',sans-serif; font-size:14px; font-weight:500; letter-spacing:.1px;
+  cursor:pointer; box-shadow:var(--md-elevation-3); transition:all .2s;
+}
+.fab:hover { box-shadow:0 6px 12px rgba(0,0,0,.15); filter:brightness(.97); }
+.fab .material-icons-round { font-size:24px; }
+
+/* ── TOP APP BAR ── */
+.top-app-bar {
+  background:var(--md-surface-container-low);
+  padding:0 16px;
+  display:flex; align-items:center; gap:8px; height:64px;
+  position:sticky; top:0; z-index:100;
+  box-shadow:var(--md-elevation-1);
+}
+.top-app-bar .logo-text {
+  font-family:'Roboto',sans-serif; font-size:22px; font-weight:400; color:var(--md-on-surface);
+  flex:1; letter-spacing:0;
+}
+.top-app-bar .logo-text strong { font-weight:700; color:var(--md-primary); }
+.top-bar-actions { display:flex; align-items:center; gap:4px; }
+
+/* Badge */
+.badge {
+  position:relative;
+}
+.badge::after {
+  content:attr(data-count);
+  position:absolute; top:-2px; right:-2px;
+  background:var(--md-error); color:#fff;
+  font-size:9px; font-weight:700; min-width:16px; height:16px;
+  border-radius:8px; display:flex; align-items:center; justify-content:center;
+  padding:0 4px; pointer-events:none; font-family:'Roboto',sans-serif;
+}
+.badge[data-count="0"]::after { display:none; }
+
+/* ── SEARCH BAR ── */
+.search-bar-wrap {
+  padding:12px 16px;
+  background:var(--md-surface-container-low);
+  border-bottom:1px solid var(--md-outline-variant);
+}
+.search-bar {
+  display:flex; align-items:center; gap:12px;
+  background:var(--md-surface-container-highest);
+  border-radius:var(--md-shape-full);
+  padding:0 16px; height:52px;
+}
+.search-bar .material-icons-round { color:var(--md-on-surface-variant); font-size:22px; flex-shrink:0; }
+.search-bar input {
+  flex:1; background:transparent; border:none; outline:none;
+  font-family:'Roboto',sans-serif; font-size:16px; color:var(--md-on-surface);
+}
+.search-bar input::placeholder { color:var(--md-on-surface-variant); }
+.search-divider { width:1px; height:28px; background:var(--md-outline-variant); margin:0 4px; }
+.sort-select {
+  background:transparent; border:none; outline:none;
+  font-family:'Roboto',sans-serif; font-size:13px; color:var(--md-primary); font-weight:500;
+  cursor:pointer; padding:4px 0;
+}
+
+/* ── CHIP ROW ── */
+.chip-row {
+  padding:12px 16px; display:flex; gap:8px; overflow-x:auto; flex-wrap:nowrap;
+  background:var(--md-surface-container-low);
+  border-bottom:1px solid var(--md-outline-variant);
+}
+.chip-row::-webkit-scrollbar { display:none; }
+
+.filter-chip {
+  display:inline-flex; align-items:center; gap:6px;
+  height:32px; padding:0 16px;
+  border:1px solid var(--md-outline-variant); border-radius:var(--md-shape-sm);
+  background:transparent; color:var(--md-on-surface-variant);
+  font-family:'Roboto',sans-serif; font-size:14px; font-weight:500;
+  cursor:pointer; transition:all .2s; white-space:nowrap; flex-shrink:0;
+}
+.filter-chip:hover { background:var(--md-state-hover); border-color:var(--md-outline); }
+.filter-chip.selected {
+  background:var(--md-secondary-container); color:var(--md-on-secondary-container);
+  border-color:transparent;
+}
+.filter-chip .material-icons-round { font-size:16px; }
+
+/* ── CONTENT AREA ── */
+.content {
+  max-width:1400px; margin:0 auto; padding:20px 16px 100px;
+}
+
+.section-header {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:16px;
+}
+.section-title {
+  font-size:14px; font-weight:500; color:var(--md-on-surface-variant); letter-spacing:.1px;
+}
+
+/* ── CARD GRID ── */
+.card-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:12px;
+}
+
+/* ── AD CARD (MD3 Filled Card) ── */
+.ad-card {
+  background:var(--md-surface-container-low);
+  border-radius:var(--md-shape-md);
+  overflow:hidden;
+  display:flex; flex-direction:column;
+  box-shadow:var(--md-elevation-1);
+  transition:box-shadow .2s, transform .2s;
+  cursor:default;
+  animation:fadeUp .35s ease both;
+}
+.ad-card:hover {
+  box-shadow:var(--md-elevation-3);
+  transform:translateY(-2px);
+}
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(12px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* Card media */
+.card-media {
+  position:relative; height:192px; overflow:hidden;
+  background:var(--md-surface-container-highest);
+  cursor:pointer;
+}
+.card-media img { width:100%; height:100%; object-fit:cover; transition:transform .3s; }
+.ad-card:hover .card-media img { transform:scale(1.04); }
+.card-media-placeholder {
+  width:100%; height:100%;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+  color:var(--md-on-surface-variant);
+}
+.card-media-placeholder .material-icons-round { font-size:48px; opacity:.4; }
+.card-media-placeholder span { font-size:12px; opacity:.6; }
+.media-count-chip {
+  position:absolute; bottom:8px; left:8px;
+  background:rgba(0,0,0,.6); color:#fff;
+  border-radius:var(--md-shape-full); padding:2px 10px;
+  font-size:12px; font-weight:500; display:flex; align-items:center; gap:4px;
+  backdrop-filter:blur(4px);
+}
+.media-count-chip .material-icons-round { font-size:14px; }
+
+/* Fav FAB on card */
+.card-fav-btn {
+  position:absolute; top:8px; right:8px;
+  width:36px; height:36px; border-radius:50%; border:none;
+  background:var(--md-surface-container-lowest);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; transition:all .2s; box-shadow:var(--md-elevation-1);
+  color:var(--md-on-surface-variant);
+}
+.card-fav-btn:hover { box-shadow:var(--md-elevation-2); }
+.card-fav-btn.active { background:var(--md-error-container); color:var(--md-error); }
+.card-fav-btn .material-icons-round { font-size:20px; }
+
+/* Featured badge */
+.featured-chip {
+  position:absolute; top:8px; left:8px;
+  background:var(--md-tertiary); color:var(--md-on-tertiary);
+  border-radius:var(--md-shape-full); padding:2px 10px;
+  font-size:11px; font-weight:700; letter-spacing:.5px; text-transform:uppercase;
+}
+
+/* Card content */
+.card-content { padding:16px; flex:1; display:flex; flex-direction:column; gap:6px; }
+
+.card-cat-row { display:flex; align-items:center; gap:6px; }
+.cat-chip {
+  display:inline-flex; align-items:center; gap:4px;
+  padding:2px 10px; border-radius:var(--md-shape-full);
+  font-size:11px; font-weight:500; letter-spacing:.3px;
+  color:#fff;
+}
+.cat-chip.cat-nieruh { background:var(--cat-real); }
+.cat-chip.cat-avto   { background:var(--cat-auto); }
+.cat-chip.cat-robota { background:var(--cat-work); }
+.cat-chip.cat-tech   { background:var(--cat-tech); }
+.cat-chip.cat-serv   { background:var(--cat-serv); }
+.cat-chip.cat-anim   { background:var(--cat-anim); }
+
+.card-title {
+  font-size:16px; font-weight:500; color:var(--md-on-surface); line-height:1.4;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+}
+.card-desc {
+  font-size:13px; color:var(--md-on-surface-variant); line-height:1.6;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+  flex:1;
+}
+.card-price {
+  font-size:20px; font-weight:700; color:var(--md-primary); margin-top:4px;
+}
+.card-price.free { color:#2D6A2D; }
+
+.card-footer {
+  padding:8px 16px 12px;
+  display:flex; align-items:center; justify-content:space-between;
+  border-top:1px solid var(--md-outline-variant);
+}
+.card-meta-info { display:flex; align-items:center; gap:4px; font-size:12px; color:var(--md-on-surface-variant); }
+.card-meta-info .material-icons-round { font-size:14px; }
+.card-actions-row { display:flex; gap:6px; padding:0 12px 12px; }
+.card-btn-detail, .card-btn-chat {
+  flex:1; display:flex; align-items:center; justify-content:center; gap:6px;
+  height:36px; border-radius:var(--md-shape-full);
+  font-family:'Roboto',sans-serif; font-size:13px; font-weight:500;
+  cursor:pointer; transition:all .2s; border:none; letter-spacing:.1px;
+}
+.card-btn-detail {
+  background:var(--md-surface-container-highest);
+  color:var(--md-on-surface);
+}
+.card-btn-detail:hover { background:var(--md-surface-container-high); box-shadow:var(--md-elevation-1); }
+.card-btn-chat {
+  background:var(--md-primary); color:var(--md-on-primary);
+}
+.card-btn-chat:hover { box-shadow:var(--md-elevation-2); filter:brightness(1.05); }
+.card-btn-chat .material-icons-round, .card-btn-detail .material-icons-round { font-size:16px; }
+
+/* ── NAVIGATION DRAWER (Side Panel) ── */
+.drawer-scrim {
+  position:fixed; inset:0; background:rgba(0,0,0,.4);
+  z-index:400; display:none; opacity:0; transition:opacity .3s;
+}
+.drawer-scrim.open { display:block; opacity:1; }
+
+.drawer {
+  position:fixed; top:0; right:0; bottom:0; width:400px; max-width:100vw;
+  background:var(--md-surface-container-low);
+  z-index:401; display:flex; flex-direction:column;
+  transform:translateX(100%); transition:transform .3s cubic-bezier(.4,0,.2,1);
+  border-radius:var(--md-shape-xl) 0 0 var(--md-shape-xl);
+}
+.drawer.open { transform:translateX(0); }
+
+.drawer-header {
+  padding:16px 24px;
+  display:flex; align-items:center; gap:12px;
+  border-bottom:1px solid var(--md-outline-variant);
+  min-height:64px;
+}
+.drawer-title {
+  font-size:18px; font-weight:500; color:var(--md-on-surface); flex:1;
+}
+.drawer-body { flex:1; overflow-y:auto; }
+.drawer-body::-webkit-scrollbar { width:4px; }
+.drawer-body::-webkit-scrollbar-thumb { background:var(--md-outline-variant); border-radius:2px; }
+
+/* ── CHAT DRAWER ── */
+.conv-list { padding:8px; display:flex; flex-direction:column; gap:2px; }
+.conv-item {
+  display:flex; align-items:center; gap:16px;
+  padding:12px 16px; border-radius:var(--md-shape-full);
+  cursor:pointer; transition:background .2s;
+}
+.conv-item:hover { background:var(--md-state-hover); }
+.conv-item.active { background:var(--md-secondary-container); }
+.conv-avatar {
+  width:48px; height:48px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:18px; font-weight:700; color:#fff; flex-shrink:0;
+}
+.conv-body { flex:1; min-width:0; }
+.conv-name { font-size:15px; font-weight:500; color:var(--md-on-surface); margin-bottom:2px; }
+.conv-ad { font-size:12px; color:var(--md-primary); margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.conv-preview { font-size:13px; color:var(--md-on-surface-variant); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.conv-meta { display:flex; flex-direction:column; align-items:flex-end; gap:4px; flex-shrink:0; }
+.conv-time { font-size:11px; color:var(--md-on-surface-variant); }
+.conv-badge {
+  background:var(--md-primary); color:var(--md-on-primary);
+  font-size:10px; font-weight:700; min-width:18px; height:18px;
+  border-radius:9px; display:flex; align-items:center; justify-content:center; padding:0 5px;
+}
+
+/* ── CHAT WINDOW (full drawer) ── */
+.chat-win-drawer {
+  position:fixed; top:0; right:0; bottom:0; width:400px; max-width:100vw;
+  background:var(--md-surface-container-low);
+  z-index:402; display:flex; flex-direction:column;
+  transform:translateX(100%); transition:transform .25s cubic-bezier(.4,0,.2,1);
+  border-radius:var(--md-shape-xl) 0 0 var(--md-shape-xl);
+}
+.chat-win-drawer.open { transform:translateX(0); }
+
+.chat-win-header {
+  padding:12px 16px;
+  display:flex; align-items:center; gap:8px;
+  border-bottom:1px solid var(--md-outline-variant); min-height:64px;
+}
+.chat-win-info { flex:1; min-width:0; }
+.chat-win-name { font-size:16px; font-weight:500; color:var(--md-on-surface); }
+.chat-win-sub { font-size:12px; color:var(--md-on-surface-variant); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.online-status { display:flex; align-items:center; gap:4px; font-size:11px; color:#2D6A2D; }
+.online-dot { width:6px; height:6px; border-radius:50%; background:#2D6A2D; }
+
+/* Ad strip */
+.ad-strip-bar {
+  padding:10px 16px; background:var(--md-surface-container);
+  border-bottom:1px solid var(--md-outline-variant);
+  display:flex; align-items:center; gap:12px;
+}
+.ad-strip-info { flex:1; min-width:0; }
+.ad-strip-label { font-size:10px; font-weight:500; color:var(--md-on-surface-variant); text-transform:uppercase; letter-spacing:.5px; margin-bottom:2px; }
+.ad-strip-title { font-size:13px; font-weight:500; color:var(--md-on-surface); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ad-strip-price { font-size:14px; font-weight:700; color:var(--md-primary); flex-shrink:0; }
+
+/* Messages */
+.msg-area {
+  flex:1; overflow-y:auto; padding:16px;
+  display:flex; flex-direction:column; gap:6px;
+}
+.msg-area::-webkit-scrollbar { width:4px; }
+.msg-area::-webkit-scrollbar-thumb { background:var(--md-outline-variant); border-radius:2px; }
+
+.date-chip {
+  align-self:center; background:var(--md-surface-container-highest);
+  border-radius:var(--md-shape-full); padding:4px 12px;
+  font-size:11px; color:var(--md-on-surface-variant); margin:8px 0;
+}
+.msg-row { display:flex; flex-direction:column; }
+.msg-row.me { align-items:flex-end; }
+.msg-row.them { align-items:flex-start; }
+.msg-sender { font-size:11px; color:var(--md-on-surface-variant); padding:0 12px; margin-bottom:2px; }
+.bubble {
+  max-width:80%; padding:10px 14px; font-size:14px; line-height:1.6; word-break:break-word;
+}
+.me .bubble {
+  background:var(--md-primary-container); color:var(--md-on-primary-container);
+  border-radius:20px 20px 4px 20px;
+}
+.them .bubble {
+  background:var(--md-surface-container-highest); color:var(--md-on-surface);
+  border-radius:20px 20px 20px 4px;
+}
+.bubble-time { font-size:10px; color:var(--md-on-surface-variant); margin-top:4px; text-align:right; display:block; }
+.them .bubble-time { text-align:left; }
+
+.typing-row { display:flex; align-items:center; gap:4px; padding:10px 14px; background:var(--md-surface-container-highest); border-radius:20px 20px 20px 4px; align-self:flex-start; }
+.t-dot { width:6px; height:6px; border-radius:50%; background:var(--md-on-surface-variant); animation:tdot 1.2s infinite; }
+.t-dot:nth-child(2){ animation-delay:.2s; } .t-dot:nth-child(3){ animation-delay:.4s; }
+@keyframes tdot { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-5px)} }
+
+/* Chat input */
+.chat-input-row {
+  padding:12px 16px;
+  border-top:1px solid var(--md-outline-variant);
+  display:flex; align-items:flex-end; gap:8px;
+}
+.chat-input-field {
+  flex:1; background:var(--md-surface-container-highest); border:none; outline:none;
+  border-radius:var(--md-shape-xl); padding:10px 16px;
+  font-family:'Roboto',sans-serif; font-size:14px; color:var(--md-on-surface);
+  resize:none; max-height:120px; min-height:44px; line-height:1.5;
+}
+.chat-input-field::placeholder { color:var(--md-on-surface-variant); }
+.btn-send-icon {
+  width:44px; height:44px; border-radius:50%; border:none;
+  background:var(--md-primary); color:var(--md-on-primary);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; transition:all .2s; flex-shrink:0;
+}
+.btn-send-icon:hover { box-shadow:var(--md-elevation-2); }
+.btn-send-icon .material-icons-round { font-size:20px; }
+
+/* ── FAVORITES DRAWER ── */
+.fav-item {
+  display:flex; align-items:center; gap:12px;
+  padding:12px 16px; cursor:pointer; transition:background .2s;
+}
+.fav-item:hover { background:var(--md-state-hover); }
+.fav-thumb {
+  width:64px; height:64px; border-radius:var(--md-shape-sm); flex-shrink:0;
+  background:var(--md-surface-container-highest); overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+}
+.fav-thumb img { width:100%; height:100%; object-fit:cover; }
+.fav-thumb .material-icons-round { font-size:28px; color:var(--md-on-surface-variant); opacity:.5; }
+.fav-body { flex:1; min-width:0; }
+.fav-cat { font-size:11px; font-weight:500; margin-bottom:3px; }
+.fav-title { font-size:14px; font-weight:500; color:var(--md-on-surface); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:3px; }
+.fav-price { font-size:15px; font-weight:700; color:var(--md-primary); }
+.fav-price.free { color:#2D6A2D; }
+.fav-city { font-size:12px; color:var(--md-on-surface-variant); margin-top:2px; }
+.fav-divider { height:1px; background:var(--md-outline-variant); margin:0 16px; }
+
+.empty-state {
+  flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:12px; padding:40px; text-align:center;
+}
+.empty-state .material-icons-round { font-size:64px; color:var(--md-on-surface-variant); opacity:.4; }
+.empty-state p { font-size:14px; color:var(--md-on-surface-variant); line-height:1.6; }
+
+/* ── VIEW MODAL (Full-screen dialog) ── */
+.dialog-scrim {
+  position:fixed; inset:0; background:rgba(0,0,0,.4);
+  z-index:500; display:none; align-items:flex-end; justify-content:center;
+  padding:0;
+}
+.dialog-scrim.open { display:flex; }
+.dialog {
+  background:var(--md-surface-container-low);
+  border-radius:var(--md-shape-xl) var(--md-shape-xl) 0 0;
+  width:100%; max-width:640px; max-height:92vh;
+  overflow-y:auto; padding-bottom:24px;
+  animation:slideUp .3s cubic-bezier(.4,0,.2,1);
+}
+@keyframes slideUp { from{transform:translateY(40px);opacity:0} to{transform:translateY(0);opacity:1} }
+.dialog::-webkit-scrollbar { width:4px; }
+.dialog::-webkit-scrollbar-thumb { background:var(--md-outline-variant); border-radius:2px; }
+
+/* Drag handle */
+.dialog-handle { width:32px; height:4px; border-radius:2px; background:var(--md-outline-variant); margin:12px auto 0; }
+
+.dialog-header {
+  padding:16px 24px; display:flex; align-items:center; gap:8px;
+  position:sticky; top:0; background:var(--md-surface-container-low); z-index:1;
+}
+.dialog-title { font-size:18px; font-weight:500; flex:1; }
+.dialog-gallery { width:100%; height:240px; position:relative; overflow:hidden; cursor:pointer; }
+.dialog-gallery img { width:100%; height:100%; object-fit:cover; transition:transform .3s; }
+.dialog-gallery:hover img { transform:scale(1.03); }
+.dialog-gallery-placeholder {
+  width:100%; height:100%; background:var(--md-surface-container-highest);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+  color:var(--md-on-surface-variant);
+}
+.dialog-gallery-placeholder .material-icons-round { font-size:56px; opacity:.4; }
+.dialog-thumbs { display:flex; gap:8px; padding:8px 16px; overflow-x:auto; }
+.dialog-thumbs::-webkit-scrollbar { height:3px; }
+.dialog-thumbs::-webkit-scrollbar-thumb { background:var(--md-outline-variant); }
+.dialog-thumb {
+  width:72px; height:72px; border-radius:var(--md-shape-sm); flex-shrink:0;
+  object-fit:cover; cursor:pointer; border:2px solid transparent; transition:border .2s;
+}
+.dialog-thumb.active { border-color:var(--md-primary); }
+.dialog-body { padding:16px 24px; }
+.dialog-price { font-size:28px; font-weight:700; color:var(--md-primary); margin:12px 0; }
+.dialog-price.free { color:#2D6A2D; }
+.dialog-desc { font-size:14px; line-height:1.8; color:var(--md-on-surface-variant); margin-bottom:20px; }
+
+.info-list { display:flex; flex-direction:column; gap:0; margin-bottom:20px; }
+.info-row {
+  display:flex; align-items:center; gap:16px;
+  padding:14px 0; border-bottom:1px solid var(--md-outline-variant);
+}
+.info-row:last-child { border-bottom:none; }
+.info-row .material-icons-round { font-size:20px; color:var(--md-primary); flex-shrink:0; }
+.info-row-label { font-size:12px; color:var(--md-on-surface-variant); margin-bottom:2px; }
+.info-row-value { font-size:14px; font-weight:500; color:var(--md-on-surface); }
+.dialog-actions { display:flex; gap:10px; padding:0 24px; }
+
+/* ── ADD DIALOG ── */
+.add-dialog-body { padding:0 24px 8px; display:flex; flex-direction:column; gap:12px; }
+.md-field {
+  position:relative; background:var(--md-surface-container-highest);
+  border-radius:var(--md-shape-sm) var(--md-shape-sm) 0 0;
+  border-bottom:1px solid var(--md-outline);
+  transition:border-bottom-color .2s;
+}
+.md-field:focus-within { border-bottom:2px solid var(--md-primary); }
+.md-field label {
+  position:absolute; top:8px; left:16px;
+  font-size:12px; font-weight:500; color:var(--md-primary); letter-spacing:.4px;
+}
+.md-field input, .md-field textarea, .md-field select {
+  width:100%; background:transparent; border:none; outline:none;
+  padding:28px 16px 10px; font-family:'Roboto',sans-serif; font-size:15px; color:var(--md-on-surface);
+  resize:vertical;
+}
+.md-field select { appearance:none; cursor:pointer; }
+.field-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+
+/* Photo upload */
+.photo-upload-zone {
+  border:2px dashed var(--md-outline-variant); border-radius:var(--md-shape-md);
+  padding:20px; text-align:center; cursor:pointer; transition:all .2s;
+  position:relative; background:var(--md-surface-container);
+}
+.photo-upload-zone:hover, .photo-upload-zone.drag { border-color:var(--md-primary); background:color-mix(in srgb, var(--md-primary) 8%, transparent); }
+.photo-upload-zone input { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; }
+.photo-upload-zone .material-icons-round { font-size:32px; color:var(--md-primary); opacity:.7; margin-bottom:4px; }
+.photo-upload-zone p { font-size:13px; color:var(--md-on-surface-variant); }
+.photo-upload-zone strong { color:var(--md-primary); font-weight:500; }
+.photo-preview-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-top:8px; }
+.photo-preview-item { position:relative; aspect-ratio:1; border-radius:var(--md-shape-sm); overflow:hidden; }
+.photo-preview-item img { width:100%; height:100%; object-fit:cover; }
+.photo-preview-item .del-btn {
+  position:absolute; top:2px; right:2px; width:20px; height:20px; border-radius:50%;
+  background:rgba(0,0,0,.6); color:#fff; border:none; font-size:12px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+}
+.photo-preview-item .del-btn .material-icons-round { font-size:14px; }
+
+/* ── LIGHTBOX ── */
+.lb-overlay {
+  display:none; position:fixed; inset:0; background:rgba(0,0,0,.92); z-index:600;
+  flex-direction:column; align-items:center; justify-content:center;
+}
+.lb-overlay.open { display:flex; }
+.lb-top { position:absolute; top:12px; right:12px; }
+.lb-main { position:relative; display:flex; align-items:center; justify-content:center; width:100%; flex:1; padding:0 60px; }
+.lb-img { max-width:100%; max-height:72vh; object-fit:contain; border-radius:var(--md-shape-sm); }
+.lb-nav {
+  position:absolute; top:50%; transform:translateY(-50%);
+  width:48px; height:48px; border-radius:50%; border:none;
+  background:rgba(255,255,255,.15); color:#fff; font-size:24px;
+  display:flex; align-items:center; justify-content:center; cursor:pointer; transition:background .2s;
+}
+.lb-nav:hover { background:rgba(255,255,255,.25); }
+.lb-prev { left:8px; } .lb-next { right:8px; }
+.lb-bottom { width:100%; display:flex; flex-direction:column; align-items:center; gap:8px; padding:8px 0; }
+.lb-counter { font-size:12px; color:rgba(255,255,255,.6); }
+.lb-thumbs { display:flex; gap:6px; overflow-x:auto; max-width:90vw; padding:4px; }
+.lb-thumbs::-webkit-scrollbar { height:3px; }
+.lb-thumbs::-webkit-scrollbar-thumb { background:#555; }
+.lb-thumb { width:60px; height:60px; object-fit:cover; border-radius:var(--md-shape-xs); cursor:pointer; border:2px solid transparent; opacity:.5; transition:all .2s; flex-shrink:0; }
+.lb-thumb.active { opacity:1; border-color:var(--md-primary); }
+
+/* ── SNACKBAR ── */
+.snackbar {
+  position:fixed; bottom:80px; left:50%; transform:translateX(-50%) translateY(20px);
+  background:var(--md-inverse-surface); color:var(--md-inverse-on-surface);
+  border-radius:var(--md-shape-xs); padding:12px 20px;
+  font-size:14px; font-weight:500; z-index:700;
+  opacity:0; transition:all .3s cubic-bezier(.4,0,.2,1); white-space:nowrap;
+  display:flex; align-items:center; gap:12px; box-shadow:var(--md-elevation-3);
+}
+.snackbar.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+.no-results {
+  grid-column:1/-1; display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:12px; padding:80px 20px; text-align:center;
+  color:var(--md-on-surface-variant);
+}
+.no-results .material-icons-round { font-size:64px; opacity:.4; }
+.no-results p { font-size:16px; }
+
+@media(max-width:600px) {
+  .drawer, .chat-win-drawer { width:100%; border-radius:var(--md-shape-xl) var(--md-shape-xl) 0 0; top:auto; height:90vh; }
+  .card-grid { grid-template-columns:1fr 1fr; gap:8px; }
+  .card-media { height:140px; }
+  .fab { bottom:16px; right:16px; }
+  .dialog { max-height:95vh; }
+}
+@media(max-width:400px) {
+  .card-grid { grid-template-columns:1fr; }
+}
 </style>
 </head>
-
 <body>
 
-<header>
-  <div>ПУЛЬС</div>
-  <input id="search" placeholder="Пошук...">
-</header>
+<!-- TOP APP BAR -->
+<div class="top-app-bar">
+  <span class="logo-text">Дошка<strong>.UA</strong></span>
+  <div class="top-bar-actions">
+    <button class="icon-btn badge" data-count="0" id="favBadgeBtn" onclick="openFavDrawer()" title="Обране">
+      <span class="material-icons-round">favorite_border</span>
+    </button>
+    <button class="icon-btn badge" data-count="3" id="chatBadgeBtn" onclick="openChatDrawer()" title="Чат">
+      <span class="material-icons-round">chat_bubble_outline</span>
+    </button>
+  </div>
+</div>
 
-<div id="news"></div>
+<!-- SEARCH BAR -->
+<div class="search-bar-wrap">
+  <div class="search-bar">
+    <span class="material-icons-round">search</span>
+    <input type="text" id="searchInput" placeholder="Пошук оголошень..." oninput="renderCards()">
+    <div class="search-divider"></div>
+    <select class="sort-select" id="sortSelect" onchange="renderCards()">
+      <option value="newest">Новіші</option>
+      <option value="price-asc">Дешевше</option>
+      <option value="price-desc">Дорожче</option>
+    </select>
+  </div>
+</div>
+
+<!-- CHIP FILTER ROW -->
+<div class="chip-row" id="chipRow">
+  <button class="filter-chip selected" data-cat="all" onclick="setCategory(this,'all')">
+    <span class="material-icons-round">apps</span> Всі
+  </button>
+  <button class="filter-chip" data-cat="Нерухомість" onclick="setCategory(this,'Нерухомість')">
+    <span class="material-icons-round">home</span> Нерухомість
+  </button>
+  <button class="filter-chip" data-cat="Транспорт" onclick="setCategory(this,'Транспорт')">
+    <span class="material-icons-round">directions_car</span> Транспорт
+  </button>
+  <button class="filter-chip" data-cat="Робота" onclick="setCategory(this,'Робота')">
+    <span class="material-icons-round">work</span> Робота
+  </button>
+  <button class="filter-chip" data-cat="Техніка" onclick="setCategory(this,'Техніка')">
+    <span class="material-icons-round">devices</span> Техніка
+  </button>
+  <button class="filter-chip" data-cat="Послуги" onclick="setCategory(this,'Послуги')">
+    <span class="material-icons-round">build</span> Послуги
+  </button>
+  <button class="filter-chip" data-cat="Тварини" onclick="setCategory(this,'Тварини')">
+    <span class="material-icons-round">pets</span> Тварини
+  </button>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="content">
+  <div class="section-header">
+    <span class="section-title" id="resultsCount">12 оголошень</span>
+  </div>
+  <div class="card-grid" id="board"></div>
+</div>
+
+<!-- FAB -->
+<button class="fab ripple" onclick="openAddDialog()">
+  <span class="material-icons-round">add</span>
+  Подати оголошення
+</button>
+
+<!-- ══ LIGHTBOX ══ -->
+<div class="lb-overlay" id="lbOverlay">
+  <div class="lb-top">
+    <button class="icon-btn" style="color:#fff" onclick="closeLB()">
+      <span class="material-icons-round">close</span>
+    </button>
+  </div>
+  <div class="lb-main">
+    <button class="lb-nav lb-prev" onclick="lbNav(-1)">
+      <span class="material-icons-round">chevron_left</span>
+    </button>
+    <img class="lb-img" id="lbImg" src="" alt="">
+    <button class="lb-nav lb-next" onclick="lbNav(1)">
+      <span class="material-icons-round">chevron_right</span>
+    </button>
+  </div>
+  <div class="lb-bottom">
+    <div class="lb-counter" id="lbCounter"></div>
+    <div class="lb-thumbs" id="lbThumbs"></div>
+  </div>
+</div>
+
+<!-- ══ FAVORITES DRAWER ══ -->
+<div class="drawer-scrim" id="favScrim" onclick="closeFavDrawer()"></div>
+<div class="drawer" id="favDrawer">
+  <div class="drawer-header">
+    <button class="icon-btn" onclick="closeFavDrawer()">
+      <span class="material-icons-round">arrow_back</span>
+    </button>
+    <span class="drawer-title">Обране</span>
+  </div>
+  <div class="drawer-body" id="favBody"></div>
+</div>
+
+<!-- ══ CHAT DRAWER ══ -->
+<div class="drawer-scrim" id="chatScrim" onclick="closeChatDrawer()"></div>
+<div class="drawer" id="chatDrawer">
+  <div class="drawer-header">
+    <button class="icon-btn" onclick="closeChatDrawer()">
+      <span class="material-icons-round">arrow_back</span>
+    </button>
+    <span class="drawer-title">Повідомлення</span>
+  </div>
+  <div class="drawer-body">
+    <div class="conv-list" id="convList"></div>
+    <div class="empty-state" id="chatEmptyState" style="display:none">
+      <span class="material-icons-round">chat_bubble_outline</span>
+      <p>Немає переписок.<br>Натисніть «Написати» на оголошенні!</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ACTIVE CHAT WINDOW ══ -->
+<div class="chat-win-drawer" id="chatWin">
+  <div class="chat-win-header">
+    <button class="icon-btn" onclick="closeWin()">
+      <span class="material-icons-round">arrow_back</span>
+    </button>
+    <div class="chat-win-info">
+      <div class="chat-win-name" id="winName"></div>
+      <div class="chat-win-sub" id="winSub"></div>
+    </div>
+    <div class="online-status" id="winOnline">
+      <div class="online-dot"></div> Онлайн
+    </div>
+  </div>
+  <div class="ad-strip-bar" id="adStrip"></div>
+  <div class="msg-area" id="msgArea"></div>
+  <div class="chat-input-row">
+    <textarea class="chat-input-field" id="msgInput" placeholder="Напишіть повідомлення..." rows="1"
+      onkeydown="onKey(event)" oninput="resizeInput(this)"></textarea>
+    <button class="btn-send-icon" onclick="sendMsg()">
+      <span class="material-icons-round">send</span>
+    </button>
+  </div>
+</div>
+
+<!-- ══ VIEW DIALOG ══ -->
+<div class="dialog-scrim" id="viewScrim" onclick="closeViewScrim(event)">
+  <div class="dialog" id="viewDialog">
+    <div class="dialog-handle"></div>
+    <div id="viewContent"></div>
+  </div>
+</div>
+
+<!-- ══ ADD DIALOG ══ -->
+<div class="dialog-scrim" id="addScrim" onclick="closeAddScrim(event)">
+  <div class="dialog">
+    <div class="dialog-handle"></div>
+    <div class="dialog-header">
+      <button class="icon-btn" onclick="closeAddDialog()">
+        <span class="material-icons-round">close</span>
+      </button>
+      <span class="dialog-title">Нове оголошення</span>
+    </div>
+    <div class="add-dialog-body">
+      <div class="form-group">
+        <div class="photo-upload-zone" id="uploadZone" ondragover="dragOver(event)" ondragleave="dragLeave()" ondrop="dropFiles(event)">
+          <input type="file" id="photoInput" accept="image/*" multiple onchange="handleFiles(this.files)">
+          <span class="material-icons-round">add_photo_alternate</span>
+          <p><strong>Додати фото</strong> або перетягніть сюди<br><span style="font-size:11px;opacity:.7">до 6 зображень</span></p>
+        </div>
+        <div class="photo-preview-grid" id="photoPreviewGrid"></div>
+      </div>
+      <div class="md-field">
+        <label>Заголовок *</label>
+        <input id="nTitle" placeholder="Напр.: Продам ноутбук HP...">
+      </div>
+      <div class="field-row">
+        <div class="md-field">
+          <label>Категорія *</label>
+          <select id="nCat">
+            <option>Нерухомість</option><option>Транспорт</option><option>Робота</option>
+            <option>Техніка</option><option>Послуги</option><option>Тварини</option>
+          </select>
+        </div>
+        <div class="md-field">
+          <label>Ціна (грн)</label>
+          <input type="number" id="nPrice" placeholder="0 = безкоштовно">
+        </div>
+      </div>
+      <div class="md-field">
+        <label>Місто *</label>
+        <input id="nCity" placeholder="Київ, Львів...">
+      </div>
+      <div class="md-field">
+        <label>Опис *</label>
+        <textarea id="nDesc" rows="3" placeholder="Детальний опис товару або послуги..."></textarea>
+      </div>
+      <div class="md-field">
+        <label>Контакт *</label>
+        <input id="nContact" placeholder="+380...">
+      </div>
+      <div style="display:flex;gap:10px;padding-bottom:8px">
+        <button class="btn-outlined ripple" style="flex:1;justify-content:center" onclick="closeAddDialog()">Скасувати</button>
+        <button class="btn-filled ripple" style="flex:2;justify-content:center" onclick="submitAd()">
+          <span class="material-icons-round">publish</span> Опублікувати
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SNACKBAR -->
+<div class="snackbar" id="snackbar"></div>
 
 <script>
-let newsData = [];
+/* ══ DATA ══ */
+const CC = {'Нерухомість':'cat-nieruh','Транспорт':'cat-avto','Робота':'cat-robota','Техніка':'cat-tech','Послуги':'cat-serv','Тварини':'cat-anim'};
+const CAT_ICONS = {'Нерухомість':'home','Транспорт':'directions_car','Робота':'work','Техніка':'devices','Послуги':'build','Тварини':'pets'};
+const SELLER_COLORS = ['#4355B9','#77536C','#006874','#2D6A2D','#8B4513','#117A65'];
+const REPLIES = ['Так, ще доступно! 😊','Можу надіслати більше фото.','Торг можливий при зустрічі.','Доставка Новою Поштою!','Зателефонуйте в будь-який час 📞','Коли вам зручно зустрітися?','Є всі документи.','Гарантія ще 10 місяців 👍'];
 
-async function fetchNews() {
-  try {
-    const res = await fetch('https://newsapi.org/v2/top-headlines?country=ua&apiKey=demo');
-    const data = await res.json();
+function makeImg(color, icon) {
+  const c = document.createElement('canvas'); c.width=400; c.height=300;
+  const x = c.getContext('2d');
+  const g = x.createLinearGradient(0,0,400,300);
+  g.addColorStop(0, color); g.addColorStop(1, color+'cc');
+  x.fillStyle = g; x.fillRect(0,0,400,300);
+  x.fillStyle='rgba(255,255,255,0.08)'; x.fillRect(0,0,400,150);
+  return c.toDataURL();
+}
 
-    newsData = data.articles.map(a => ({
-      title: a.title,
-      desc: a.description || '',
-      source: a.source.name
-    }));
+const PHOTOS = {
+  1:[makeImg('#4A2D6E'),makeImg('#5D3A8A'),makeImg('#3D2461')],
+  2:[makeImg('#1A3A52'),makeImg('#21495E'),makeImg('#162E42')],
+  3:[makeImg('#1A3D1A'),makeImg('#204820')],
+  4:[makeImg('#5C2E0A'),makeImg('#6B3510'),makeImg('#4A2408')],
+  5:[makeImg('#8A7200')],
+  6:[makeImg('#0D5A4A'),makeImg('#0F6B58')],
+  7:[makeImg('#5C1A6E'),makeImg('#6B2180'),makeImg('#501864')],
+  8:[makeImg('#8A6000')],
+  9:[makeImg('#5C2E0A'),makeImg('#6B3510')],
+  10:[makeImg('#1A3D1A')],
+  11:[makeImg('#0D5A4A'),makeImg('#0F6B58'),makeImg('#0A4236')],
+  12:[makeImg('#1A3A52'),makeImg('#21495E')],
+};
 
-    render(newsData);
-    localStorage.setItem('cache', JSON.stringify(newsData));
+let ads=[
+  {id:1,featured:true,title:'2-кімнатна квартира в центрі Києва',category:'Нерухомість',price:85000,city:'Київ',desc:'Простора квартира 58 кв.м, ремонт 2022 року, вбудована кухня, паркінг. Поруч метро Хрещатик.',contact:'+38 067 123 45 67',date:'2 трав 2026'},
+  {id:2,featured:false,title:'Toyota Camry 2020, 2.5 AT',category:'Транспорт',price:28500,city:'Харків',desc:'Один власник, гаражне зберігання, сервісний запис у дилера. Без ДТП, всі опції.',contact:'+38 066 987 65 43',date:'1 трав 2026'},
+  {id:3,featured:false,title:'Frontend розробник — шукаю роботу',category:'Робота',price:0,city:'Львів',desc:'React, TypeScript, Next.js — 4 роки досвіду. Middle/Senior. Готовий до ремоуту.',contact:'dev@example.com',date:'30 квіт 2026'},
+  {id:4,featured:false,title:'iPhone 15 Pro, 256GB, чорний',category:'Техніка',price:42000,city:'Одеса',desc:'Відмінний стан, коробка, аксесуари. Акумулятор 98%.',contact:'+38 050 555 11 22',date:'29 квіт 2026'},
+  {id:5,featured:false,title:'Ремонт квартир під ключ',category:'Послуги',price:0,city:'Дніпро',desc:'Бригада з 10 роками досвіду. Штукатурка, плитка, електрика, сантехніка.',contact:'+38 097 444 33 11',date:'28 квіт 2026'},
+  {id:6,featured:false,title:'Кошенята мейн-кун, документи',category:'Тварини',price:5500,city:'Київ',desc:'Три хлопчики та дві дівчинки. Батьки чемпіони. Щеплені, з ветпаспортом.',contact:'+38 063 222 77 88',date:'27 квіт 2026'},
+  {id:7,featured:true,title:'Оренда офісу 120 кв.м, Поділ',category:'Нерухомість',price:1200,city:'Київ',desc:'Відкритий простір, переговорна, кухня. 5 хв від метро Контрактова площа.',contact:'office@realty.ua',date:'3 трав 2026'},
+  {id:8,featured:false,title:'Вантажна газель з вантажниками',category:'Послуги',price:350,city:'Запоріжжя',desc:'Переїзди, перевезення меблів та будматеріалів. Газель 1.5т, двоє вантажників.',contact:'+38 067 777 00 11',date:'26 квіт 2026'},
+  {id:9,featured:false,title:'MacBook Pro M3, 14", 512GB',category:'Техніка',price:68000,city:'Вінниця',desc:'Куплений листопад 2024, є чек. Стан ідеальний, 10 місяців гарантії.',contact:'+38 096 100 20 30',date:'2 трав 2026'},
+  {id:10,featured:false,title:'Водій категорії B+C, досвід 12 р.',category:'Робота',price:0,city:'Херсон',desc:'Шукаю постійну роботу водієм або кур\'єром. Без шкідливих звичок.',contact:'+38 098 300 40 50',date:'25 квіт 2026'},
+  {id:11,featured:false,title:'Лабрадор ретрівер, хлопчик 3 р.',category:'Тварини',price:0,city:'Чернівці',desc:'Шукаємо дому для Рекса. Добрий, вихований, знає команди.',contact:'+38 050 600 11 22',date:'24 квіт 2026'},
+  {id:12,featured:false,title:'Skoda Octavia A7, 2018',category:'Транспорт',price:16800,city:'Полтава',desc:'Дизель 2.0 150 к.с., пробіг 98 000 км. Повна сервісна книга.',contact:'+38 067 800 90 10',date:'23 квіт 2026'},
+];
 
-  } catch(e) {
-    const cache = localStorage.getItem('cache');
-    if (cache) {
-      newsData = JSON.parse(cache);
-      render(newsData);
-    }
+let convs = [
+  {id:'c1',adId:1,adTitle:'2-кімнатна квартира в центрі Києва',seller:'Марія К.',initial:'М',color:'#4355B9',online:true,unread:2,msgs:[{f:'them',t:'Доброго дня! Квартира ще доступна?',ts:'10:30'},{f:'me',t:'Так! Коли зручно подивитися?',ts:'10:32'},{f:'them',t:'Може у суботу о 12:00?',ts:'10:34'},{f:'them',t:'І чи є паркінг підземний?',ts:'10:35'}]},
+  {id:'c2',adId:4,adTitle:'iPhone 15 Pro, 256GB',seller:'Олег Т.',initial:'О',color:'#77536C',online:false,unread:1,msgs:[{f:'me',t:'Привіт! Є ще в наявності?',ts:'вчора'},{f:'them',t:'Так є! Відмінний стан.',ts:'вчора'},{f:'them',t:'Можу надіслати відео 📱',ts:'вчора'}]},
+  {id:'c3',adId:2,adTitle:'Toyota Camry 2020',seller:'Тарас В.',initial:'Т',color:'#006874',online:true,unread:0,msgs:[{f:'me',t:'Добрий день! Можливий торг?',ts:'пн'},{f:'them',t:'Привіт! Торг при огляді — до $500',ts:'пн'},{f:'me',t:'Дякую, подумаю',ts:'пн'}]},
+];
+
+let favorites = new Set();
+let currentCat = 'all';
+let activeConvId = null;
+let newAdPhotos = [];
+let lbPhotos = [], lbIdx = 0;
+
+function fp(p){ return p ? p.toLocaleString('uk-UA') + ' ₴' : 'Безкоштовно'; }
+function nowTime(){ const d=new Date(); return d.getHours()+':'+String(d.getMinutes()).padStart(2,'0'); }
+function getPhotos(id){ return PHOTOS[id] || []; }
+
+/* SNACKBAR */
+function snack(msg){
+  const s=document.getElementById('snackbar'); s.textContent=msg; s.classList.add('show');
+  setTimeout(()=>s.classList.remove('show'),2500);
+}
+
+/* BOARD */
+function renderCards(){
+  const board=document.getElementById('board');
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  const sort=document.getElementById('sortSelect').value;
+  let list=ads.filter(a=>(currentCat==='all'||a.category===currentCat)&&(a.title.toLowerCase().includes(q)||a.desc.toLowerCase().includes(q)||a.city.toLowerCase().includes(q)));
+  if(sort==='price-asc') list.sort((a,b)=>a.price-b.price);
+  else if(sort==='price-desc') list.sort((a,b)=>b.price-a.price);
+  else list.sort((a,b)=>b.id-a.id);
+  document.getElementById('resultsCount').textContent=list.length+' оголошень';
+  if(!list.length){
+    board.innerHTML=`<div class="no-results"><span class="material-icons-round">search_off</span><p>Нічого не знайдено</p></div>`;
+    return;
+  }
+  board.innerHTML=list.map((a,i)=>{
+    const photos=getPhotos(a.id); const isFav=favorites.has(a.id);
+    return `<div class="ad-card" style="animation-delay:${i*40}ms">
+      <div class="card-media" onclick="openLB(${a.id},0)">
+        ${photos[0]?`<img src="${photos[0]}" alt="${a.title}" loading="lazy">`:`<div class="card-media-placeholder"><span class="material-icons-round">${CAT_ICONS[a.category]||'image'}</span><span>Фото відсутні</span></div>`}
+        ${photos.length>1?`<div class="media-count-chip"><span class="material-icons-round">photo_library</span>${photos.length}</div>`:''}
+        ${a.featured?`<div class="featured-chip">ТОП</div>`:''}
+        <button class="card-fav-btn${isFav?' active':''}" onclick="toggleFav(event,${a.id})">
+          <span class="material-icons-round">${isFav?'favorite':'favorite_border'}</span>
+        </button>
+      </div>
+      <div class="card-content">
+        <div class="card-cat-row">
+          <span class="cat-chip ${CC[a.category]||''}">${a.category}</span>
+        </div>
+        <div class="card-title">${a.title}</div>
+        <div class="card-desc">${a.desc}</div>
+        <div class="card-price${!a.price?' free':''}">${fp(a.price)}</div>
+      </div>
+      <div class="card-footer">
+        <div class="card-meta-info"><span class="material-icons-round">location_on</span>${a.city}</div>
+        <div class="card-meta-info">${a.date}</div>
+      </div>
+      <div class="card-actions-row">
+        <button class="card-btn-detail ripple" onclick="openView(${a.id})">
+          <span class="material-icons-round">open_in_new</span> Детальніше
+        </button>
+        <button class="card-btn-chat ripple" onclick="startChat(${a.id})">
+          <span class="material-icons-round">chat</span> Написати
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function setCategory(btn, cat){
+  document.querySelectorAll('.filter-chip').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected'); currentCat=cat; renderCards();
+}
+
+/* FAVORITES */
+function toggleFav(e,id){
+  e.stopPropagation();
+  if(favorites.has(id)){favorites.delete(id);snack('Видалено з обраного');}
+  else{favorites.add(id);snack('❤️ Додано до обраного');}
+  document.getElementById('favBadgeBtn').dataset.count=favorites.size;
+  renderCards();
+  if(document.getElementById('favDrawer').classList.contains('open')) renderFavBody();
+}
+
+function openFavDrawer(){
+  document.getElementById('favScrim').classList.add('open');
+  document.getElementById('favDrawer').classList.add('open');
+  renderFavBody();
+}
+function closeFavDrawer(){
+  document.getElementById('favScrim').classList.remove('open');
+  document.getElementById('favDrawer').classList.remove('open');
+}
+function renderFavBody(){
+  const body=document.getElementById('favBody');
+  const favAds=ads.filter(a=>favorites.has(a.id));
+  if(!favAds.length){
+    body.innerHTML=`<div class="empty-state"><span class="material-icons-round">favorite_border</span><p>Немає збережених.<br>Натисніть ❤ на картці!</p></div>`;
+    return;
+  }
+  body.innerHTML=favAds.map((a,i)=>{
+    const photos=getPhotos(a.id);
+    return `${i>0?'<div class="fav-divider"></div>':''}
+    <div class="fav-item" onclick="openView(${a.id});closeFavDrawer()">
+      <div class="fav-thumb">${photos[0]?`<img src="${photos[0]}">`:`<span class="material-icons-round">${CAT_ICONS[a.category]}</span>`}</div>
+      <div class="fav-body">
+        <div class="fav-cat ${CC[a.category]||''}" style="color:${getCatColor(a.category)}">${a.category}</div>
+        <div class="fav-title">${a.title}</div>
+        <div class="fav-price${!a.price?' free':''}">${fp(a.price)}</div>
+        <div class="fav-city"><span style="font-size:12px" class="material-icons-round">location_on</span>${a.city}</div>
+      </div>
+      <button class="icon-btn" onclick="event.stopPropagation();toggleFav(event,${a.id});renderFavBody()">
+        <span class="material-icons-round" style="color:var(--md-error)">delete_outline</span>
+      </button>
+    </div>`;
+  }).join('');
+}
+function getCatColor(cat){return{Нерухомість:'var(--cat-real)',Транспорт:'var(--cat-auto)',Робота:'var(--cat-work)',Техніка:'var(--cat-tech)',Послуги:'var(--cat-serv)',Тварини:'var(--cat-anim)'}[cat]||'var(--md-primary)';}
+
+/* LIGHTBOX */
+function openLB(adId, startIdx){
+  const photos=getPhotos(adId); if(!photos.length)return;
+  lbPhotos=photos; lbIdx=startIdx; updateLB();
+  document.getElementById('lbOverlay').classList.add('open');
+  document.addEventListener('keydown',lbKey);
+}
+function closeLB(){ document.getElementById('lbOverlay').classList.remove('open'); document.removeEventListener('keydown',lbKey); }
+function lbKey(e){ if(e.key==='ArrowLeft')lbNav(-1); else if(e.key==='ArrowRight')lbNav(1); else if(e.key==='Escape')closeLB(); }
+function lbNav(dir){ lbIdx=(lbIdx+dir+lbPhotos.length)%lbPhotos.length; updateLB(); }
+function updateLB(){
+  document.getElementById('lbImg').src=lbPhotos[lbIdx];
+  document.getElementById('lbCounter').textContent=(lbIdx+1)+' / '+lbPhotos.length;
+  document.getElementById('lbThumbs').innerHTML=lbPhotos.map((p,i)=>`<img class="lb-thumb${i===lbIdx?' active':''}" src="${p}" onclick="lbIdx=${i};updateLB()">`).join('');
+  document.querySelectorAll('.lb-nav').forEach(n=>n.style.display=lbPhotos.length<2?'none':'flex');
+}
+
+/* VIEW DIALOG */
+function openView(id){
+  const a=ads.find(x=>x.id===id); if(!a)return;
+  const photos=getPhotos(a.id); const isFav=favorites.has(a.id);
+  let galleryHTML=photos.length
+    ?`<div class="dialog-gallery" onclick="openLB(${a.id},0)"><img id="dialogMainImg" src="${photos[0]}" alt=""></div>${photos.length>1?`<div class="dialog-thumbs">${photos.map((p,i)=>`<img class="dialog-thumb${i===0?' active':''}" src="${p}" onclick="switchDialogImg(this,'${p}')">`).join('')}</div>`:''}`
+    :`<div class="dialog-gallery"><div class="dialog-gallery-placeholder"><span class="material-icons-round">${CAT_ICONS[a.category]||'image'}</span><span>Фото відсутні</span></div></div>`;
+  document.getElementById('viewContent').innerHTML=`
+    <div class="dialog-header">
+      <button class="icon-btn" onclick="closeViewDialog()"><span class="material-icons-round">close</span></button>
+      <span class="dialog-title" style="font-size:16px">${a.category}</span>
+      <button class="icon-btn${isFav?' ':' '}" id="dialogFavBtn" onclick="dialogToggleFav(${a.id})" style="color:${isFav?'var(--md-error)':'var(--md-on-surface-variant)'}">
+        <span class="material-icons-round">${isFav?'favorite':'favorite_border'}</span>
+      </button>
+    </div>
+    ${galleryHTML}
+    <div class="dialog-body">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <span class="cat-chip ${CC[a.category]||''}">${a.category}</span>
+        ${a.featured?`<span style="background:var(--md-tertiary);color:var(--md-on-tertiary);font-size:11px;font-weight:700;padding:2px 10px;border-radius:var(--md-shape-full);letter-spacing:.5px">ТОП</span>`:''}
+      </div>
+      <h2 style="font-size:22px;font-weight:400;line-height:1.3;margin:10px 0;color:var(--md-on-surface)">${a.title}</h2>
+      <div class="dialog-price${!a.price?' free':''}">${fp(a.price)}</div>
+      <p class="dialog-desc">${a.desc}</p>
+      <div class="info-list">
+        <div class="info-row"><span class="material-icons-round">location_on</span><div><div class="info-row-label">Місто</div><div class="info-row-value">${a.city}</div></div></div>
+        <div class="info-row"><span class="material-icons-round">calendar_today</span><div><div class="info-row-label">Дата публікації</div><div class="info-row-value">${a.date}</div></div></div>
+        <div class="info-row"><span class="material-icons-round">contact_phone</span><div><div class="info-row-label">Контакт</div><div class="info-row-value">${a.contact}</div></div></div>
+        <div class="info-row"><span class="material-icons-round">tag</span><div><div class="info-row-label">ID оголошення</div><div class="info-row-value">#${a.id}</div></div></div>
+      </div>
+      <div class="dialog-actions">
+        <button class="btn-outlined ripple" style="flex:1;justify-content:center" onclick="alert('Контакт: ${a.contact}')">
+          <span class="material-icons-round" style="font-size:18px">call</span> Зателефонувати
+        </button>
+        <button class="btn-filled ripple" style="flex:1.5;justify-content:center" onclick="closeViewDialog();startChat(${a.id})">
+          <span class="material-icons-round" style="font-size:18px">chat</span> Написати
+        </button>
+      </div>
+    </div>`;
+  document.getElementById('viewScrim').classList.add('open');
+}
+function switchDialogImg(el, src){
+  document.getElementById('dialogMainImg').src=src;
+  document.querySelectorAll('.dialog-thumb').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+}
+function dialogToggleFav(id){
+  const e={stopPropagation:()=>{}};
+  toggleFav(e,id);
+  const btn=document.getElementById('dialogFavBtn');
+  const isFav=favorites.has(id);
+  btn.style.color=isFav?'var(--md-error)':'var(--md-on-surface-variant)';
+  btn.querySelector('.material-icons-round').textContent=isFav?'favorite':'favorite_border';
+}
+function closeViewDialog(){ document.getElementById('viewScrim').classList.remove('open'); }
+function closeViewScrim(e){ if(e.target===document.getElementById('viewScrim'))closeViewDialog(); }
+
+/* ADD */
+function openAddDialog(){ document.getElementById('addScrim').classList.add('open'); }
+function closeAddDialog(){ document.getElementById('addScrim').classList.remove('open'); }
+function closeAddScrim(e){ if(e.target===document.getElementById('addScrim'))closeAddDialog(); }
+function dragOver(e){ e.preventDefault(); document.getElementById('uploadZone').classList.add('drag'); }
+function dragLeave(){ document.getElementById('uploadZone').classList.remove('drag'); }
+function dropFiles(e){ e.preventDefault(); dragLeave(); handleFiles(e.dataTransfer.files); }
+function handleFiles(files){
+  Array.from(files).slice(0,6-newAdPhotos.length).forEach(f=>{
+    if(!f.type.startsWith('image/'))return;
+    const r=new FileReader(); r.onload=ev=>{newAdPhotos.push(ev.target.result);renderPhotoPreview();}; r.readAsDataURL(f);
+  });
+}
+function renderPhotoPreview(){
+  document.getElementById('photoPreviewGrid').innerHTML=newAdPhotos.map((src,i)=>`
+    <div class="photo-preview-item">
+      <img src="${src}">
+      <button class="del-btn" onclick="removePhoto(${i})"><span class="material-icons-round">close</span></button>
+    </div>`).join('');
+}
+function removePhoto(i){ newAdPhotos.splice(i,1); renderPhotoPreview(); }
+function submitAd(){
+  const t=document.getElementById('nTitle').value.trim(),ct=document.getElementById('nCat').value,p=parseInt(document.getElementById('nPrice').value)||0,ci=document.getElementById('nCity').value.trim(),d=document.getElementById('nDesc').value.trim(),co=document.getElementById('nContact').value.trim();
+  if(!t||!ci||!d||!co){snack('Заповніть усі обов\'язкові поля!');return;}
+  const nid=ads.length+1;
+  if(newAdPhotos.length)PHOTOS[nid]=[...newAdPhotos];
+  ads.unshift({id:nid,featured:false,title:t,category:ct,price:p,city:ci,desc:d,contact:co,date:new Date().toLocaleDateString('uk-UA',{day:'numeric',month:'short',year:'numeric'})});
+  closeAddDialog();
+  currentCat='all';
+  document.querySelectorAll('.filter-chip').forEach(b=>b.classList.remove('selected'));
+  document.querySelector('[data-cat="all"]').classList.add('selected');
+  ['nTitle','nPrice','nCity','nDesc','nContact'].forEach(id=>document.getElementById(id).value='');
+  newAdPhotos=[];renderPhotoPreview();
+  renderCards();snack('✅ Оголошення опубліковано!');
+}
+
+/* CHAT */
+function openChatDrawer(){
+  document.getElementById('chatScrim').classList.add('open');
+  document.getElementById('chatDrawer').classList.add('open');
+  renderConvList();
+}
+function closeChatDrawer(){
+  document.getElementById('chatScrim').classList.remove('open');
+  document.getElementById('chatDrawer').classList.remove('open');
+  closeWin();
+}
+function renderConvList(){
+  const list=document.getElementById('convList'); const empty=document.getElementById('chatEmptyState');
+  const total=convs.reduce((s,c)=>s+c.unread,0);
+  document.getElementById('chatBadgeBtn').dataset.count=total||'0';
+  if(!convs.length){list.style.display='none';empty.style.display='flex';return;}
+  list.style.display='flex';empty.style.display='none';
+  list.innerHTML=convs.map(c=>{
+    const last=c.msgs[c.msgs.length-1]; const pv=(last.f==='me'?'Ви: ':'')+last.t;
+    return `<div class="conv-item${activeConvId===c.id?' active':''}" onclick="openWin('${c.id}')">
+      <div class="conv-avatar" style="background:${c.color}">${c.initial}</div>
+      <div class="conv-body">
+        <div class="conv-name">${c.seller}</div>
+        <div class="conv-ad">📌 ${c.adTitle.substring(0,28)}${c.adTitle.length>28?'…':''}</div>
+        <div class="conv-preview">${pv.substring(0,40)}${pv.length>40?'…':''}</div>
+      </div>
+      <div class="conv-meta">
+        <span class="conv-time">${last.ts}</span>
+        ${c.unread?`<span class="conv-badge">${c.unread}</span>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+function openWin(cid){
+  const c=convs.find(x=>x.id===cid); if(!c)return;
+  activeConvId=cid; c.unread=0;
+  document.getElementById('winName').textContent=c.seller;
+  document.getElementById('winSub').textContent=c.adTitle;
+  document.getElementById('winOnline').style.display=c.online?'flex':'none';
+  const ad=ads.find(a=>a.id===c.adId);
+  document.getElementById('adStrip').innerHTML=ad?`<div class="ad-strip-info"><div class="ad-strip-label">Оголошення</div><div class="ad-strip-title">${ad.title}</div></div><div class="ad-strip-price">${fp(ad.price)}</div>`:'';
+  renderMsgs(c);
+  document.getElementById('chatWin').classList.add('open');
+  renderConvList();
+}
+function closeWin(){ document.getElementById('chatWin').classList.remove('open'); activeConvId=null; renderConvList(); }
+function renderMsgs(c){
+  const area=document.getElementById('msgArea');
+  let html=`<div class="date-chip">Сьогодні</div>`;
+  c.msgs.forEach((m,i)=>{
+    const prev=c.msgs[i-1]; const showName=m.f==='them'&&(!prev||prev.f!==m.f);
+    html+=`<div class="msg-row ${m.f}">${showName?`<div class="msg-sender">${c.seller}</div>`:''}
+      <div class="bubble">${m.t}<span class="bubble-time">${m.ts}${m.f==='me'?' ✓✓':''}</span></div></div>`;
+  });
+  area.innerHTML=html; area.scrollTop=area.scrollHeight;
+}
+function sendMsg(){
+  const inp=document.getElementById('msgInput'); const txt=inp.value.trim(); if(!txt||!activeConvId)return;
+  const c=convs.find(x=>x.id===activeConvId); if(!c)return;
+  c.msgs.push({f:'me',t:txt,ts:nowTime()}); inp.value=''; inp.style.height='44px';
+  renderMsgs(c); renderConvList();
+  if(Math.random()>0.25){
+    const area=document.getElementById('msgArea');
+    setTimeout(()=>{if(activeConvId!==c.id)return;const d=document.createElement('div');d.className='typing-row';d.id='td';d.innerHTML='<div class="t-dot"></div><div class="t-dot"></div><div class="t-dot"></div>';area.appendChild(d);area.scrollTop=area.scrollHeight;},700);
+    setTimeout(()=>{if(activeConvId!==c.id)return;const td=document.getElementById('td');if(td)td.remove();c.msgs.push({f:'them',t:REPLIES[Math.floor(Math.random()*REPLIES.length)],ts:nowTime()});renderMsgs(c);renderConvList();},2200+Math.random()*1200);
   }
 }
-
-function render(data) {
-  const el = document.getElementById('news');
-  el.innerHTML = data.map(n => `
-    <div class="card">
-      <h3>${n.title}</h3>
-      <p>${n.desc}</p>
-      <small>${n.source}</small>
-    </div>
-  `).join('');
+function onKey(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();} }
+function resizeInput(el){ el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,120)+'px'; }
+function startChat(adId){
+  const ad=ads.find(a=>a.id===adId); if(!ad)return;
+  let c=convs.find(x=>x.adId===adId);
+  if(!c){
+    const names=['Марія','Олег','Тарас','Василь','Дмитро','Наталія']; const n=names[Math.floor(Math.random()*names.length)];
+    const cl=SELLER_COLORS[Math.floor(Math.random()*SELLER_COLORS.length)];
+    c={id:'c'+Date.now(),adId,adTitle:ad.title,seller:n+' '+String.fromCharCode(65+Math.floor(Math.random()*20))+'.',initial:n[0],color:cl,online:Math.random()>0.4,unread:0,msgs:[{f:'them',t:'Привіт! Мене звати '+n+'. Чим можу допомогти? 😊',ts:nowTime()}]};
+    convs.unshift(c);
+  }
+  openChatDrawer(); setTimeout(()=>openWin(c.id),260);
 }
 
-document.getElementById('search').addEventListener('input', e => {
-  const q = e.target.value.toLowerCase();
-  const filtered = newsData.filter(n => n.title.toLowerCase().includes(q));
-  render(filtered);
-});
-
-fetchNews();
+/* INIT */
+renderCards();
 </script>
-
 </body>
 </html>
